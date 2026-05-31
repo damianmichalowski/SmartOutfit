@@ -7,10 +7,11 @@ interface Props {
   state: AppState;
   onSendMessage: (text: string) => void;
   onApplyAiSuggestion: () => void;
+  onApplyTrenchSuggestion: () => void;
 }
 
-export default function AiStylistChat({ state, onSendMessage, onApplyAiSuggestion }: Props) {
-  const { aiMessages, isAiTyping, activeHighlight, isDemoRunning } = state;
+export default function AiStylistChat({ state, onSendMessage, onApplyAiSuggestion, onApplyTrenchSuggestion }: Props) {
+  const { aiMessages, isAiTyping, activeHighlight, isDemoRunning, selectedProducts } = state;
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isHighlighted = activeHighlight === 'ai-chat' && isDemoRunning;
@@ -27,6 +28,11 @@ export default function AiStylistChat({ state, onSendMessage, onApplyAiSuggestio
   };
 
   const hasAiResponse = aiMessages.some(m => m.role === 'ai');
+  const hasTrenchMessage = aiMessages.some(m => m.id === 'demo-bot-2');
+  const shirtWatchApplied = selectedProducts.some(p => p.id === 'white-minimal-shirt') && selectedProducts.some(p => p.id === 'silver-watch');
+  const trenchApplied = selectedProducts.some(p => p.id === 'trench-coat');
+  const showOutfitApply = hasAiResponse && !shirtWatchApplied && !isAiTyping;
+  const showTrenchApply = hasTrenchMessage && !trenchApplied && !isAiTyping;
 
   return (
     <div className={`h-full flex flex-col transition-all duration-300 ${isHighlighted ? 'outline outline-1 outline-camel outline-offset-2' : ''}`}>
@@ -93,14 +99,26 @@ export default function AiStylistChat({ state, onSendMessage, onApplyAiSuggestio
           </div>
         )}
 
-        {hasAiResponse && !isAiTyping && (
+        {showOutfitApply && (
           <div className="pl-8 animate-fade-in">
             <button
               onClick={onApplyAiSuggestion}
               className="w-full py-2.5 bg-camel text-cream label-micro hover:bg-camel-dark transition-colors"
               style={{ letterSpacing: '0.15em' }}
             >
-              Apply Stylist Suggestion
+              Apply Outfit Suggestion
+            </button>
+          </div>
+        )}
+
+        {showTrenchApply && (
+          <div className="pl-8 animate-fade-in">
+            <button
+              onClick={onApplyTrenchSuggestion}
+              className="w-full py-2.5 bg-espresso/80 text-cream label-micro hover:bg-espresso transition-colors border border-camel/30"
+              style={{ letterSpacing: '0.15em' }}
+            >
+              Add Trench Coat
             </button>
           </div>
         )}

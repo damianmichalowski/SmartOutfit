@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Generate 5 progressive outfit model images for SmartOutfit demo.
-Transparent PNG background, full body head-to-toe visible.
+Full-generation approach for SmartOutfit.
+Each step generates a complete new image with the full accumulated outfit.
+Same model description in every prompt for maximum consistency.
 """
 
 import os, time, io, sys, base64
@@ -21,85 +22,74 @@ if not API_KEY:
 MODELS_DIR = os.path.join(os.path.dirname(__file__), '..', 'public', 'models')
 os.makedirs(MODELS_DIR, exist_ok=True)
 
-# Shared model description — used identically in every prompt for consistency
-MODEL_DESC = (
-    "Tall slim female fashion model, 178 cm, warm olive skin, "
-    "dark brown hair neatly tied back. "
-    "FULL BODY VISIBLE from the very top of the head to the bottom of the feet — "
-    "do not crop any part of the body. "
-    "Straight neutral standing pose facing forward, arms relaxed at sides. "
-    "Transparent background — no background at all, just the model. "
-    "Soft even studio lighting. "
-    "Full body portrait, 85mm equivalent, sharp focus everywhere. "
-    "No text, no watermarks, no props."
+W, H = 1024, 1536
+
+# ── Model identity anchor (repeated in every prompt for consistency) ──────────
+MODEL_ANCHOR = (
+    "Full body fashion photo from top of head to tips of toes, no cropping. "
+    "Tall slim female model, warm olive skin, long dark hair loosely tied back. "
+    "Standing straight, arms relaxed at sides, neutral confident expression. "
+    "Barefoot unless shoes are specified. "
+    "Transparent background. Soft even studio lighting, sharp focus. "
+    "No text, no logos, no watermarks."
 )
 
-IMAGES = [
-    (
-        "model-base.png",
-        "Base — white pajamas / loungewear",
-        (
-            f"{MODEL_DESC} "
-            "She wears very simple plain white cotton pajama set: "
-            "loose white long-sleeve top and white wide-leg pants. "
-            "Minimal, no patterns, no logos. Barefoot or white socks. "
-            "Complete body visible, head to feet."
-        )
+# ── Per-step outfit descriptions ──────────────────────────────────────────────
+
+STEP_PROMPTS = {
+    'model-base': (
+        MODEL_ANCHOR +
+        " Outfit: simple white cotton loungewear — loose long-sleeve top and wide-leg pants."
     ),
-    (
-        "model-jacket.png",
-        "Step 1 — beige business jacket",
-        (
-            f"{MODEL_DESC} "
-            "She wears an elegant structured beige camel business blazer jacket "
-            "over a simple white top, with simple beige trousers or skirt below. "
-            "Premium wool, padded shoulders, tailored fit. "
-            "Complete body visible from top of head to feet."
-        )
+    'model-jacket': (
+        MODEL_ANCHOR +
+        " Outfit: elegant structured beige camel business blazer jacket worn open,"
+        " over a simple white top. White loose trousers or pajama pants on the lower body."
+        " Padded shoulders, tailored fit, premium wool look."
     ),
-    (
-        "model-jacket-trousers.png",
-        "Step 2 — jacket + black tailored trousers",
-        (
-            f"{MODEL_DESC} "
-            "She wears a coordinated business suit: "
-            "structured beige camel blazer jacket on top, "
-            "high-waisted black tailored dress trousers on the bottom. "
-            "Slim straight cut, sharp crease. Simple flat shoes or bare feet. "
-            "Complete body visible from top of head to bottom of feet."
-        )
+    'model-jacket-trousers': (
+        MODEL_ANCHOR +
+        " Outfit: elegant beige camel business blazer jacket worn open,"
+        " over a simple white top."
+        " High-waisted black tailored dress trousers on the lower body,"
+        " slim straight cut, sharp pressed crease."
+        " Barefoot."
     ),
-    (
-        "model-jacket-trousers-shoes.png",
-        "Step 3 — full suit + cognac loafers",
-        (
-            f"{MODEL_DESC} "
-            "She wears: structured beige camel business blazer jacket, "
-            "high-waisted black tailored dress trousers, "
-            "and cognac brown leather penny loafers. "
-            "Classic loafer silhouette, hand-stitched. "
-            "SHOES MUST BE FULLY VISIBLE at the bottom. "
-            "Complete body from top of head to bottom of shoes."
-        )
+    'model-jacket-trousers-shoes': (
+        MODEL_ANCHOR +
+        " Outfit: elegant beige camel business blazer jacket worn open,"
+        " over a simple white top."
+        " High-waisted black tailored dress trousers."
+        " Cognac brown leather penny loafers on both feet,"
+        " classic silhouette, low heel."
     ),
-    (
-        "model-business-complete.png",
-        "Step 4 — complete AI-styled business look",
-        (
-            f"{MODEL_DESC} "
-            "She wears the complete polished business outfit: "
-            "crisp white minimal dress shirt with clean collar, "
-            "structured beige camel blazer jacket over the shirt, "
-            "high-waisted black tailored dress trousers, "
-            "cognac brown leather penny loafers, "
-            "slim silver minimalist watch on left wrist. "
-            "SHOES MUST BE FULLY VISIBLE at the bottom. "
-            "Complete body from very top of head to bottom of shoes — nothing cropped."
-        )
+    'model-business-complete': (
+        MODEL_ANCHOR +
+        " Outfit: elegant beige camel business blazer jacket."
+        " Crisp white dress shirt with visible collar above the lapel."
+        " High-waisted black tailored dress trousers."
+        " Cognac brown leather penny loafers."
+        " Slim silver minimalist watch on the left wrist."
+        " Complete polished business look."
     ),
-]
+}
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def b64_to_img(b64: str, size=(W, H)) -> Image.Image:
+    raw = base64.b64decode(b64)
+    img = Image.open(io.BytesIO(raw)).convert('RGBA')
+    if img.size != size:
+        img = img.resize(size, Image.LANCZOS)
+    return img
+
+def save(img: Image.Image, name: str):
+    path = os.path.join(MODELS_DIR, name)
+    img.save(path, 'PNG')
+    print(f"  ✓ {name}  ({os.path.getsize(path)//1024} KB)")
 
 def generate(prompt: str) -> Image.Image:
+    print("  → gpt-image-1 generation (1024×1536)…")
     r = requests.post(
         "https://api.openai.com/v1/images/generations",
         headers={"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"},
@@ -107,7 +97,7 @@ def generate(prompt: str) -> Image.Image:
             "model": "gpt-image-1",
             "prompt": prompt,
             "n": 1,
-            "size": "1024x1024",
+            "size": "1024x1536",
             "quality": "high",
             "background": "transparent",
             "output_format": "png",
@@ -116,34 +106,36 @@ def generate(prompt: str) -> Image.Image:
     )
     d = r.json()
     if 'error' in d:
-        raise RuntimeError(f"API error: {d['error']['message']}")
-    raw = base64.b64decode(d['data'][0]['b64_json'])
-    return Image.open(io.BytesIO(raw)).convert('RGBA')
+        raise RuntimeError(d['error']['message'])
+    return b64_to_img(d['data'][0]['b64_json'])
 
-def save(img: Image.Image, filename: str):
-    path = os.path.join(MODELS_DIR, filename)
-    img.save(path, 'PNG')
-    print(f"  ✓ {filename}  ({os.path.getsize(path)//1024} KB)")
+# ── Pipeline ──────────────────────────────────────────────────────────────────
+
+STEPS = [
+    ('model-base',                  '[1/5] Base — white loungewear…'),
+    ('model-jacket',                '[2/5] + Beige business jacket…'),
+    ('model-jacket-trousers',       '[3/5] + Black tailored trousers…'),
+    ('model-jacket-trousers-shoes', '[4/5] + Cognac leather loafers…'),
+    ('model-business-complete',     '[5/5] + White shirt + silver watch…'),
+]
 
 def main():
-    print(f"\n══════════════════════════════════════════")
-    print(f"  SmartOutfit — Model Images (transparent PNG)")
-    print(f"══════════════════════════════════════════\n")
+    print("\n══════════════════════════════════════════")
+    print("  SmartOutfit — Full-Generation Pipeline")
+    print("  Portrait 1024×1536 | Transparent PNG")
+    print("══════════════════════════════════════════\n")
 
-    for i, (filename, label, prompt) in enumerate(IMAGES, 1):
-        print(f"[{i}/{len(IMAGES)}] {label}…")
-        try:
-            img = generate(prompt)
-            save(img, filename)
-        except Exception as e:
-            print(f"  ✗ FAILED: {e}")
-            sys.exit(1)
-        if i < len(IMAGES):
-            time.sleep(3)
+    for name, label in STEPS:
+        print(label)
+        img = generate(STEP_PROMPTS[name])
+        save(img, f'{name}.png')
+        if name != 'model-business-complete':
+            print("  (waiting 4s…)")
+            time.sleep(4)
 
-    print(f"\n══════════════════════════════════════════")
-    print(f"  ✓ All done!")
-    print(f"══════════════════════════════════════════\n")
+    print("\n══════════════════════════════════════════")
+    print("  ✓ All 5 images generated!")
+    print("══════════════════════════════════════════\n")
 
 if __name__ == '__main__':
     main()

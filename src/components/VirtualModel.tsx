@@ -16,13 +16,16 @@ function getModelImage(state: AppState): string {
   const hasShoes   = ids.includes('leather-loafers');
   const hasShirt   = ids.includes('white-minimal-shirt');
   const hasWatch   = ids.includes('silver-watch');
+  const hasTrench  = ids.includes('trench-coat');
 
   if (isDemoRunning) {
+    if (currentDemoStep >= 7 || hasTrench) return '/models/model-trench.png';
     if (currentDemoStep >= 5 || (hasShirt && hasWatch)) return '/models/model-business-complete.png';
     if (currentDemoStep >= 3 || (hasJacket && hasTrousers && hasShoes)) return '/models/model-jacket-trousers-shoes.png';
     if (currentDemoStep >= 2 || (hasJacket && hasTrousers)) return '/models/model-jacket-trousers.png';
     if (currentDemoStep >= 1 || hasJacket) return '/models/model-jacket.png';
   } else {
+    if (hasTrench) return '/models/model-trench.png';
     if (hasShirt && hasWatch) return '/models/model-business-complete.png';
     if (hasJacket && hasTrousers && hasShoes) return '/models/model-jacket-trousers-shoes.png';
     if (hasJacket && hasTrousers) return '/models/model-jacket-trousers.png';

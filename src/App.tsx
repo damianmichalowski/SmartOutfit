@@ -13,6 +13,9 @@ import Toast from './components/Toast';
 const AI_RESPONSE =
   `For a business meeting, I'd keep the silhouette clean and confident: the beige jacket softens the look, while black tailored trousers add structure. Add the white minimal shirt and silver watch to make the outfit feel polished, professional and balanced.`;
 
+const AI_RESPONSE_2 =
+  `One more suggestion — the classic camel trench coat layered over the blazer would be ideal for the commute. Timeless, practical, and it ties the whole look together perfectly.`;
+
 const AI_USER: AiMessage = {
   id: 'demo-user',
   role: 'user',
@@ -23,6 +26,12 @@ const AI_BOT: AiMessage = {
   id: 'demo-bot',
   role: 'ai',
   content: AI_RESPONSE,
+  timestamp: new Date(),
+};
+const AI_BOT_2: AiMessage = {
+  id: 'demo-bot-2',
+  role: 'ai',
+  content: AI_RESPONSE_2,
   timestamp: new Date(),
 };
 
@@ -44,16 +53,18 @@ const STEP_SNAPSHOTS: StepSnapshot[] = [
   { productIds: ['beige-business-jacket', 'black-tailored-trousers'], aiMessages: [], savedOutfitsCount: 0, hasCart: false, isCartOpen: false, activeHighlight: 'product-catalog' },
   // 3 select shoes
   { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers'], aiMessages: [], savedOutfitsCount: 0, hasCart: false, isCartOpen: false, activeHighlight: 'product-catalog' },
-  // 4 ask AI (user message sent, waiting for response)
+  // 4 ask AI
   { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers'], aiMessages: [AI_USER], savedOutfitsCount: 0, hasCart: false, isCartOpen: false, activeHighlight: 'ai-chat' },
-  // 5 AI responded + suggestion applied
+  // 5 AI responded + shirt+watch applied
   { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers', 'white-minimal-shirt', 'silver-watch'], aiMessages: [AI_USER, AI_BOT], savedOutfitsCount: 0, hasCart: false, isCartOpen: false, activeHighlight: 'ai-chat' },
-  // 6 outfit saved
-  { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers', 'white-minimal-shirt', 'silver-watch'], aiMessages: [AI_USER, AI_BOT], savedOutfitsCount: 1, hasCart: false, isCartOpen: false, activeHighlight: 'virtual-model' },
-  // 7 added to cart
-  { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers', 'white-minimal-shirt', 'silver-watch'], aiMessages: [AI_USER, AI_BOT], savedOutfitsCount: 1, hasCart: true, isCartOpen: true, activeHighlight: 'virtual-model' },
-  // 8 demo complete
-  { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers', 'white-minimal-shirt', 'silver-watch'], aiMessages: [AI_USER, AI_BOT], savedOutfitsCount: 1, hasCart: true, isCartOpen: false, activeHighlight: '' },
+  // 6 AI suggests trench coat (no trench yet)
+  { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers', 'white-minimal-shirt', 'silver-watch'], aiMessages: [AI_USER, AI_BOT, AI_BOT_2], savedOutfitsCount: 0, hasCart: false, isCartOpen: false, activeHighlight: 'ai-chat' },
+  // 7 trench applied + outfit saved
+  { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers', 'white-minimal-shirt', 'silver-watch', 'trench-coat'], aiMessages: [AI_USER, AI_BOT, AI_BOT_2], savedOutfitsCount: 1, hasCart: false, isCartOpen: false, activeHighlight: 'virtual-model' },
+  // 8 added to cart
+  { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers', 'white-minimal-shirt', 'silver-watch', 'trench-coat'], aiMessages: [AI_USER, AI_BOT, AI_BOT_2], savedOutfitsCount: 1, hasCart: true, isCartOpen: true, activeHighlight: 'virtual-model' },
+  // 9 demo complete
+  { productIds: ['beige-business-jacket', 'black-tailored-trousers', 'leather-loafers', 'white-minimal-shirt', 'silver-watch', 'trench-coat'], aiMessages: [AI_USER, AI_BOT, AI_BOT_2], savedOutfitsCount: 1, hasCart: true, isCartOpen: false, activeHighlight: '' },
 ];
 
 // ─── Initial state ────────────────────────────────────────────────────────────
@@ -195,6 +206,15 @@ export default function App() {
     showToast('AI suggestion applied — Outfit complete');
   }, [showToast]);
 
+  const applyTrenchSuggestion = useCallback(() => {
+    setState(s => {
+      const trench = products.find(p => p.id === 'trench-coat');
+      if (!trench || s.selectedProducts.some(p => p.id === 'trench-coat')) return s;
+      return { ...s, selectedProducts: [...s.selectedProducts, trench] };
+    });
+    showToast('Trench coat added — Look complete');
+  }, [showToast]);
+
   const saveOutfit = useCallback(() => {
     setState(s => ({ ...s, savedOutfitsCount: s.savedOutfitsCount + 1 }));
     showToast('Saved as "Business Meeting Look"');
@@ -218,6 +238,7 @@ export default function App() {
           onToggleProduct={toggleProduct}
           onSendMessage={sendUserMessage}
           onApplyAiSuggestion={applyAiSuggestion}
+          onApplyTrenchSuggestion={applyTrenchSuggestion}
           onSaveOutfit={saveOutfit}
           onAddToCart={addToCart}
           onCloseCart={() => setState(s => ({ ...s, isCartOpen: false }))}

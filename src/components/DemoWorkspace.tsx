@@ -11,6 +11,7 @@ interface Props {
   onToggleProduct: (product: Product) => void;
   onSendMessage: (text: string) => void;
   onApplyAiSuggestion: () => void;
+  onApplyTrenchSuggestion: () => void;
   onSaveOutfit: () => void;
   onAddToCart: () => void;
   onCloseCart: () => void;
@@ -27,6 +28,7 @@ export default function DemoWorkspace({
   onToggleProduct,
   onSendMessage,
   onApplyAiSuggestion,
+  onApplyTrenchSuggestion,
   onSaveOutfit,
   onAddToCart,
   onCloseCart,
@@ -72,6 +74,7 @@ export default function DemoWorkspace({
             state={state}
             onSendMessage={onSendMessage}
             onApplyAiSuggestion={onApplyAiSuggestion}
+            onApplyTrenchSuggestion={onApplyTrenchSuggestion}
           />
         </div>
       </div>

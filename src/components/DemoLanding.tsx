@@ -11,7 +11,7 @@ export default function DemoLanding({ onStartDemo, onExploreManually }: Props) {
         {/* Nav */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 bg-espresso" />
+            <img src="/logo/logo.png" alt="SmartOutfit" className="h-8 w-auto flex-shrink-0" />
             <span className="font-display text-lg font-light tracking-[0.12em] text-espresso uppercase">SmartOutfit</span>
           </div>
           <div className="flex gap-8">

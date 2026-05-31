@@ -14,7 +14,7 @@ export default function DemoHeader({ state, onStartDemo, onResetDemo, onOpenCart
     <header className="bg-cream border-b border-sand px-8 h-14 flex items-center justify-between flex-shrink-0 z-30">
       {/* Logo */}
       <div className="flex items-center gap-3">
-        <div className="w-5 h-5 bg-espresso flex-shrink-0" />
+        <img src="/logo/logo.png" alt="SmartOutfit" className="h-7 w-auto flex-shrink-0" />
         <span className="font-display text-base font-light tracking-[0.1em] uppercase text-espresso">
           SmartOutfit
         </span>

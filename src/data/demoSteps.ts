@@ -69,9 +69,17 @@ export const demoSteps: DemoStep[] = [
     },
   },
   {
-    id: 'save-outfit',
-    title: 'Step 6: Save the Outfit',
-    description: 'The complete outfit is saved as "Business Meeting Look" for future reference.',
+    id: 'ai-suggests-trench',
+    title: 'Step 6: AI Recommends a Final Layer',
+    description: 'The AI stylist suggests a camel trench coat to complete the business commute look.',
+    highlightTarget: 'ai-chat',
+    durationMs: 3000,
+    action: { type: 'NONE' },
+  },
+  {
+    id: 'save-trench-outfit',
+    title: 'Step 7: Apply & Save Complete Look',
+    description: 'Trench coat added via AI suggestion. The full 6-piece outfit is saved as "Business Meeting Look".',
     highlightTarget: 'virtual-model',
     durationMs: 2500,
     action: {
@@ -81,8 +89,8 @@ export const demoSteps: DemoStep[] = [
   },
   {
     id: 'add-to-cart',
-    title: 'Step 7: Add Full Look to Cart',
-    description: 'The customer adds all 5 items to cart in one action. Cart drawer opens.',
+    title: 'Step 8: Add Full Look to Cart',
+    description: 'The customer adds all 6 items to cart in one action. Cart drawer opens.',
     highlightTarget: 'virtual-model',
     durationMs: 3000,
     action: {
