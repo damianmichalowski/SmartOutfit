@@ -6,7 +6,20 @@
       "Bash(npx tsc *)",
       "Bash(npm run *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1529456900523-3a6e15f45b26?w=600&h=900&fit=crop&q=85\" -o models/model-base.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=900&fit=crop&q=85\" -o models/model-jacket.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&h=900&fit=crop&q=85\" -o models/model-jacket-trousers.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=900&fit=crop&q=85\" -o models/model-jacket-trousers-shoes.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=600&h=900&fit=crop&q=85\" -o models/model-business-complete.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&h=600&fit=crop&q=85\" -o products/beige-business-jacket.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&h=600&fit=crop&q=85\" -o products/white-minimal-shirt.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1594938298603-c8148c4b9880?w=500&h=600&fit=crop&q=85\" -o products/black-tailored-trousers.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1449130851390-10e8cc67ffe4?w=500&h=600&fit=crop&q=85\" -o products/leather-loafers.jpg)",
+      "Bash(curl -sL \"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=600&fit=crop&q=85\" -o products/silver-watch.jpg)",
+      "Bash(awk '{print $5, $9}')"
     ]
   }
 }

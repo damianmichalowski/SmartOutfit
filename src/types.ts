@@ -11,6 +11,7 @@ export interface Product {
   tags: string[];
   emoji: string;
   layer: number;
+  image: string;
 }
 
 export interface CartItem extends Product {

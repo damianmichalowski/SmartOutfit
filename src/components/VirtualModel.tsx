@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import type { AppState } from '../types';
 
 interface Props {
@@ -6,147 +7,143 @@ interface Props {
   onAddToCart: () => void;
 }
 
-const LAYER_ORDER = [4, 3, 2, 1, 0, 5];
+function getModelImage(state: AppState): string {
+  const { selectedProducts, currentDemoStep, isDemoRunning } = state;
+  const ids = selectedProducts.map(p => p.id);
+
+  const hasJacket  = ids.includes('beige-business-jacket');
+  const hasTrousers = ids.includes('black-tailored-trousers');
+  const hasShoes   = ids.includes('leather-loafers');
+  const hasShirt   = ids.includes('white-minimal-shirt');
+  const hasWatch   = ids.includes('silver-watch');
+
+  if (isDemoRunning) {
+    if (currentDemoStep >= 5 || (hasShirt && hasWatch)) return '/models/model-business-complete.jpg';
+    if (currentDemoStep >= 3 || (hasJacket && hasTrousers && hasShoes)) return '/models/model-jacket-trousers-shoes.jpg';
+    if (currentDemoStep >= 2 || (hasJacket && hasTrousers)) return '/models/model-jacket-trousers.jpg';
+    if (currentDemoStep >= 1 || hasJacket) return '/models/model-jacket.jpg';
+  } else {
+    if (hasShirt && hasWatch) return '/models/model-business-complete.jpg';
+    if (hasJacket && hasTrousers && hasShoes) return '/models/model-jacket-trousers-shoes.jpg';
+    if (hasJacket && hasTrousers) return '/models/model-jacket-trousers.jpg';
+    if (hasJacket) return '/models/model-jacket.jpg';
+  }
+
+  return '/models/model-base.jpg';
+}
 
 export default function VirtualModel({ state, onSaveOutfit, onAddToCart }: Props) {
   const { selectedProducts, activeHighlight, isDemoRunning } = state;
   const isHighlighted = activeHighlight === 'virtual-model' && isDemoRunning;
 
+  const targetImage = getModelImage(state);
+  const [displayedImage, setDisplayedImage] = useState(targetImage);
+  const [isImageVisible, setIsImageVisible] = useState(true);
+
+  useEffect(() => {
+    if (targetImage === displayedImage) return;
+    setIsImageVisible(false);
+    const t = setTimeout(() => {
+      setDisplayedImage(targetImage);
+      setIsImageVisible(true);
+    }, 350);
+    return () => clearTimeout(t);
+  }, [targetImage, displayedImage]);
+
   const total = selectedProducts.reduce((sum, p) => sum + p.price, 0);
   const hasOutfit = selectedProducts.length > 0;
 
-  const sortedProducts = [...selectedProducts].sort((a, b) => {
-    return LAYER_ORDER.indexOf(a.layer) - LAYER_ORDER.indexOf(b.layer);
-  });
-
   return (
-    <div className={`h-full flex flex-col transition-all duration-300 ${isHighlighted ? 'ring-2 ring-camel ring-offset-2 rounded-xl' : ''}`}>
-      {/* User profile card */}
-      <div className="mx-4 mt-4 mb-3 bg-off-white rounded-xl p-3 border border-beige-light">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-beige flex items-center justify-center text-espresso font-bold font-serif text-lg">
-            A
-          </div>
+    <div className={`h-full flex flex-col transition-all duration-300 ${isHighlighted ? 'outline outline-1 outline-camel outline-offset-2' : ''}`}>
+      {/* Header */}
+      <div className="px-5 pt-5 pb-0 flex-shrink-0">
+        <div className="flex items-start justify-between mb-1">
           <div>
-            <div className="font-semibold text-espresso text-sm">Alex</div>
-            <div className="text-warm-brown text-xs">178 cm · Regular fit</div>
+            <p className="label-micro mb-0.5">Virtual Try-On Preview</p>
+            <h2 className="font-display text-xl font-light text-espresso">Your Look</h2>
           </div>
-          <div className="ml-auto text-right">
-            <div className="bg-espresso text-cream text-xs font-semibold px-2 py-0.5 rounded-full">Size M</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Model preview */}
-      <div className="flex-1 mx-4 bg-off-white rounded-2xl border border-beige-light overflow-hidden relative flex flex-col">
-        {/* Fit badge */}
-        {selectedProducts.length >= 3 && (
-          <div className="absolute top-3 right-3 z-10 bg-espresso text-cream text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg animate-fade-in">
-            Fit confidence: 92%
-          </div>
-        )}
-
-        {/* Recommended size */}
-        {hasOutfit && (
-          <div className="absolute top-3 left-3 z-10 bg-camel/90 text-white text-xs font-medium px-2.5 py-1 rounded-full animate-fade-in">
-            Recommended size: M
-          </div>
-        )}
-
-        {/* Model silhouette */}
-        <div className="flex-1 flex flex-col items-center justify-center py-6 px-4">
-          {!hasOutfit ? (
-            <div className="text-center">
-              <div className="w-28 h-52 mx-auto mb-4 relative">
-                {/* Body silhouette */}
-                <div className="absolute inset-0 flex flex-col items-center justify-start pt-2">
-                  {/* Head */}
-                  <div className="w-10 h-10 rounded-full bg-beige-light border-2 border-beige mb-1" />
-                  {/* Body */}
-                  <div className="w-16 h-24 bg-beige-light border-2 border-beige rounded-t-lg" />
-                  {/* Legs */}
-                  <div className="flex gap-1 mt-0.5">
-                    <div className="w-7 h-16 bg-beige-light border-2 border-beige rounded-b-lg" />
-                    <div className="w-7 h-16 bg-beige-light border-2 border-beige rounded-b-lg" />
-                  </div>
-                </div>
-              </div>
-              <p className="text-warm-brown text-sm">Select items to build your outfit</p>
-            </div>
-          ) : (
-            <div className="w-full max-w-[180px] mx-auto">
-              {/* Dressed model */}
-              <div className="relative mx-auto w-28 h-52 mb-4">
-                {/* Head */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-beige border-2 border-camel/30 flex items-center justify-center font-serif font-bold text-espresso text-sm">
-                  A
-                </div>
-                {/* Body with outfit items */}
-                <div className="absolute top-10 left-1/2 -translate-x-1/2 w-16 h-24 bg-cream-dark border-2 border-beige rounded-t-lg flex flex-col items-center justify-center gap-0.5">
-                  {sortedProducts.filter(p => p.layer >= 2).map(p => (
-                    <span key={p.id} className="text-base animate-fade-in">{p.emoji}</span>
-                  ))}
-                </div>
-                {/* Legs */}
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1">
-                  <div className="w-7 h-16 bg-cream-dark border-2 border-beige rounded-b-lg flex items-center justify-center">
-                    {sortedProducts.find(p => p.layer === 1) && (
-                      <span className="text-xs">{sortedProducts.find(p => p.layer === 1)?.emoji}</span>
-                    )}
-                  </div>
-                  <div className="w-7 h-16 bg-cream-dark border-2 border-beige rounded-b-lg" />
-                </div>
-                {/* Shoes */}
-                {sortedProducts.find(p => p.layer === 0) && (
-                  <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
-                    <span className="text-base animate-fade-in">{sortedProducts.find(p => p.layer === 0)?.emoji}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Selected items list */}
-              <div className="space-y-1 mt-8">
-                {sortedProducts.map(p => (
-                  <div key={p.id} className="flex items-center gap-2 bg-cream rounded-lg px-2 py-1 animate-fade-in">
-                    <span className="text-sm">{p.emoji}</span>
-                    <span className="text-xs text-espresso font-medium truncate">{p.name}</span>
-                    <span className="ml-auto text-xs text-camel font-semibold">${p.price}</span>
-                  </div>
-                ))}
-              </div>
+          {selectedProducts.length >= 3 && (
+            <div className="bg-camel/10 border border-camel/30 px-2.5 py-1.5 animate-scale-in">
+              <div className="label-micro text-camel" style={{ letterSpacing: '0.15em' }}>Fit: 92%</div>
             </div>
           )}
         </div>
+
+        {/* Profile strip */}
+        <div className="flex items-center gap-2 py-2 border-t border-sand mt-2">
+          <div className="w-5 h-5 rounded-full bg-sand border border-beige flex items-center justify-center">
+            <span className="font-display text-xs text-espresso" style={{ fontSize: '0.55rem' }}>A</span>
+          </div>
+          <span className="label-micro">Alex · 178 cm · Regular fit</span>
+          <div className="ml-auto label-micro bg-espresso/8 px-2 py-0.5">Size M</div>
+        </div>
       </div>
 
-      {/* Outfit summary & actions */}
-      <div className="mx-4 my-3 space-y-2">
+      {/* Model image — the visual centerpiece */}
+      <div className="flex-1 mx-5 my-3 relative overflow-hidden bg-sand">
+        <img
+          src={displayedImage}
+          alt="Virtual model preview"
+          className="w-full h-full object-cover object-top transition-opacity duration-500"
+          style={{ opacity: isImageVisible ? 1 : 0 }}
+        />
+
+        {/* Bottom gradient with selected items */}
         {hasOutfit && (
-          <div className="bg-beige-light rounded-xl p-3 flex justify-between items-center">
-            <div>
-              <div className="text-xs text-warm-brown mb-0.5">{selectedProducts.length} items selected</div>
-              <div className="font-bold text-espresso text-lg font-serif">${total}</div>
-            </div>
-            <div className="text-xs text-warm-brown text-right">
-              <div>Free shipping</div>
-              <div>30-day returns</div>
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-espresso/70 to-transparent px-4 pb-4 pt-12 animate-fade-in">
+            <div className="flex flex-wrap gap-1.5">
+              {selectedProducts.map(p => (
+                <span
+                  key={p.id}
+                  className="bg-cream/90 text-espresso px-2 py-0.5 animate-fade-in"
+                  style={{ fontSize: '0.55rem', fontFamily: 'DM Sans', letterSpacing: '0.08em' }}
+                >
+                  {p.name}
+                </span>
+              ))}
             </div>
           </div>
         )}
+
+        {/* No outfit state */}
+        {!hasOutfit && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="text-center px-8">
+              <p className="label-micro mb-2">Wardrobe empty</p>
+              <p className="font-display text-base font-light text-brown-muted">Select items to build your look</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Outfit summary & CTA */}
+      <div className="px-5 pb-5 flex-shrink-0">
+        {hasOutfit && (
+          <div className="flex justify-between items-baseline mb-3 px-1">
+            <span className="label-micro">{selectedProducts.length} piece{selectedProducts.length > 1 ? 's' : ''} selected</span>
+            <div className="flex items-baseline gap-1">
+              <span className="font-display text-2xl font-light text-espresso">${total}</span>
+              <span className="label-micro">total</span>
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-2">
           <button
             onClick={onSaveOutfit}
             disabled={!hasOutfit}
-            className="flex-1 py-2.5 border-2 border-espresso text-espresso text-sm font-semibold rounded-xl hover:bg-espresso hover:text-cream transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            className="flex-1 py-3 border border-espresso text-espresso label-micro hover:bg-espresso hover:text-cream transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{ letterSpacing: '0.15em' }}
           >
-            🗂 Save Outfit
+            Save Outfit
           </button>
           <button
             onClick={onAddToCart}
             disabled={!hasOutfit}
-            className="flex-1 py-2.5 bg-espresso text-cream text-sm font-semibold rounded-xl hover:bg-warm-brown transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            className="flex-1 py-3 bg-espresso text-cream label-micro hover:bg-brown-deep transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{ letterSpacing: '0.15em' }}
           >
-            🛍 Add Full Look
+            Add Full Look
           </button>
         </div>
       </div>

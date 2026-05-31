@@ -30,21 +30,26 @@ export default function ProductCatalog({ state, onToggleProduct, onSetCategory }
   const highlightedProductId = getDemoHighlightedId();
 
   return (
-    <div className={`h-full flex flex-col transition-all duration-300 ${isHighlighted ? 'ring-2 ring-camel ring-offset-2 rounded-xl' : ''}`}>
-      <div className="px-4 pt-4 pb-2">
-        <h2 className="font-serif text-base font-bold text-espresso mb-3">Virtual Wardrobe</h2>
+    <div className={`h-full flex flex-col transition-all duration-300 ${isHighlighted ? 'outline outline-1 outline-camel outline-offset-2' : ''}`}>
+      {/* Header */}
+      <div className="px-5 pt-5 pb-4 border-b border-sand flex-shrink-0">
+        <p className="label-micro mb-1">Virtual Wardrobe</p>
+        <h2 className="font-display text-xl font-light text-espresso">Collection</h2>
+      </div>
 
-        {/* Category tabs */}
-        <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-none">
+      {/* Category tabs */}
+      <div className="px-5 pt-3 pb-2 flex-shrink-0">
+        <div className="flex gap-3 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => onSetCategory(cat)}
-              className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
+              className={`flex-shrink-0 transition-all duration-200 ${
                 activeCategory === cat
-                  ? 'bg-espresso text-cream'
-                  : 'bg-cream-dark text-warm-brown hover:bg-beige'
+                  ? 'label-micro text-espresso border-b border-espresso pb-0.5'
+                  : 'label-micro text-brown-muted hover:text-espresso pb-0.5 border-b border-transparent'
               }`}
+              style={{ letterSpacing: '0.12em' }}
             >
               {cat}
             </button>
@@ -52,9 +57,9 @@ export default function ProductCatalog({ state, onToggleProduct, onSetCategory }
         </div>
       </div>
 
-      {/* Products grid */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
-        <div className="space-y-2 pt-2">
+      {/* Products */}
+      <div className="flex-1 overflow-y-auto px-5 pb-5">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-6 pt-2">
           {filtered.map(product => (
             <ProductCard
               key={product.id}

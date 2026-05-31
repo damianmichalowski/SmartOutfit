@@ -49,9 +49,20 @@ export default function DemoWorkspace({
         onOpenCart={() => state.isCartOpen ? onCloseCart() : onAddToCart()}
       />
 
-      <div className="flex-1 overflow-hidden p-4 gap-4 flex">
-        {/* Left: Virtual Wardrobe */}
-        <div className="w-[260px] flex-shrink-0 bg-off-white rounded-2xl border border-beige-light overflow-hidden flex flex-col shadow-sm">
+      {/* Demo guide — top bar, only when active */}
+      <DemoGuidePanel
+        state={state}
+        onNextStep={onNextStep}
+        onPrevStep={onPrevStep}
+        onPauseResume={onPauseResume}
+        onResetDemo={onResetDemo}
+        onRestartDemo={onRestartDemo}
+      />
+
+      {/* Main 3-column layout */}
+      <div className="flex-1 overflow-hidden flex gap-px bg-sand">
+        {/* Left — product catalog */}
+        <div className="w-64 flex-shrink-0 bg-cream-soft overflow-hidden flex flex-col">
           <ProductCatalog
             state={state}
             onToggleProduct={onToggleProduct}
@@ -59,29 +70,17 @@ export default function DemoWorkspace({
           />
         </div>
 
-        {/* Center: Virtual Model */}
-        <div className="flex-1 min-w-0 flex flex-col gap-4">
-          {/* Demo guide panel at the top */}
-          <DemoGuidePanel
+        {/* Center — virtual model (widest) */}
+        <div className="flex-1 min-w-0 bg-cream overflow-hidden flex flex-col">
+          <VirtualModel
             state={state}
-            onNextStep={onNextStep}
-            onPrevStep={onPrevStep}
-            onPauseResume={onPauseResume}
-            onResetDemo={onResetDemo}
-            onRestartDemo={onRestartDemo}
+            onSaveOutfit={onSaveOutfit}
+            onAddToCart={onAddToCart}
           />
-
-          <div className="flex-1 bg-off-white rounded-2xl border border-beige-light overflow-hidden shadow-sm">
-            <VirtualModel
-              state={state}
-              onSaveOutfit={onSaveOutfit}
-              onAddToCart={onAddToCart}
-            />
-          </div>
         </div>
 
-        {/* Right: AI Stylist */}
-        <div className="w-[280px] flex-shrink-0 bg-off-white rounded-2xl border border-beige-light overflow-hidden flex flex-col shadow-sm">
+        {/* Right — AI stylist */}
+        <div className="w-72 flex-shrink-0 bg-cream-soft overflow-hidden flex flex-col">
           <AiStylistChat
             state={state}
             onSendMessage={onSendMessage}

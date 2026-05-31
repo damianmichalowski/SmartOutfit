@@ -29,47 +29,52 @@ export default function AiStylistChat({ state, onSendMessage, onApplyAiSuggestio
   const hasAiResponse = aiMessages.some(m => m.role === 'ai');
 
   return (
-    <div className={`h-full flex flex-col transition-all duration-300 ${isHighlighted ? 'ring-2 ring-camel ring-offset-2 rounded-xl' : ''}`}>
+    <div className={`h-full flex flex-col transition-all duration-300 ${isHighlighted ? 'outline outline-1 outline-camel outline-offset-2' : ''}`}>
       {/* Header */}
-      <div className="px-4 pt-4 pb-3 border-b border-beige-light">
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-7 h-7 rounded-full bg-espresso flex items-center justify-center">
-            <span className="text-cream text-xs font-serif font-bold">AI</span>
-          </div>
+      <div className="px-5 pt-5 pb-4 border-b border-sand flex-shrink-0">
+        <div className="flex items-start justify-between">
           <div>
-            <div className="font-serif font-bold text-espresso text-sm">AI Stylist</div>
-            <div className="text-xs text-camel font-medium">Personal styling assistant</div>
+            <p className="label-micro mb-0.5">Personal</p>
+            <h2 className="font-display text-xl font-light text-espresso">AI Stylist</h2>
           </div>
-          <div className="ml-auto w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+          <div className="flex items-center gap-1.5 mt-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="label-micro">Online</span>
+          </div>
         </div>
+        <p className="label-micro mt-1.5" style={{ letterSpacing: '0.08em', fontSize: '0.58rem' }}>
+          Curated recommendations for your occasion
+        </p>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
         {aiMessages.length === 0 && !isAiTyping && (
-          <div className="text-center py-6">
-            <div className="text-3xl mb-2">👗</div>
-            <p className="text-warm-brown text-sm">Ask your personal AI stylist for outfit advice</p>
+          <div className="py-8 text-center">
+            <div className="w-10 h-10 bg-sand mx-auto mb-3 flex items-center justify-center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-brown-muted">
+                <path d="M12 2a10 10 0 1 0 10 10"/>
+                <path d="M18 14v4h4"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+            </div>
+            <p className="label-micro">Ask your personal stylist for outfit advice</p>
           </div>
         )}
 
         {aiMessages.map(msg => (
-          <div
-            key={msg.id}
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
-          >
+          <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
             {msg.role === 'ai' && (
-              <div className="w-6 h-6 rounded-full bg-espresso flex items-center justify-center mr-2 flex-shrink-0 mt-0.5">
-                <span className="text-cream text-xs font-bold">AI</span>
+              <div className="w-6 h-6 bg-espresso flex items-center justify-center mr-2 flex-shrink-0 mt-0.5">
+                <span className="text-cream" style={{ fontSize: '0.45rem', fontFamily: 'DM Sans', letterSpacing: '0.05em', fontWeight: 500 }}>AI</span>
               </div>
             )}
-            <div
-              className={`max-w-[85%] rounded-2xl px-3 py-2 text-xs leading-relaxed ${
-                msg.role === 'user'
-                  ? 'bg-espresso text-cream rounded-br-sm'
-                  : 'bg-beige-light text-espresso rounded-bl-sm'
-              }`}
-            >
+            <div className={`max-w-[85%] px-3.5 py-2.5 font-sans font-light leading-relaxed ${
+              msg.role === 'user'
+                ? 'bg-espresso text-cream text-xs'
+                : 'bg-sand text-espresso text-xs border-l-2 border-camel/40'
+            }`}
+            style={{ fontSize: '0.72rem' }}>
               {msg.content}
             </div>
           </div>
@@ -77,28 +82,26 @@ export default function AiStylistChat({ state, onSendMessage, onApplyAiSuggestio
 
         {isAiTyping && (
           <div className="flex justify-start animate-fade-in">
-            <div className="w-6 h-6 rounded-full bg-espresso flex items-center justify-center mr-2 flex-shrink-0">
-              <span className="text-cream text-xs font-bold">AI</span>
+            <div className="w-6 h-6 bg-espresso flex items-center justify-center mr-2 flex-shrink-0">
+              <span className="text-cream" style={{ fontSize: '0.45rem', fontFamily: 'DM Sans', letterSpacing: '0.05em' }}>AI</span>
             </div>
-            <div className="bg-beige-light rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1 items-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-warm-brown animate-typing" style={{ animationDelay: '0ms' }} />
-              <div className="w-1.5 h-1.5 rounded-full bg-warm-brown animate-typing" style={{ animationDelay: '200ms' }} />
-              <div className="w-1.5 h-1.5 rounded-full bg-warm-brown animate-typing" style={{ animationDelay: '400ms' }} />
+            <div className="bg-sand px-4 py-3 flex items-center">
+              <div className="dot-typing flex gap-1">
+                <span /><span /><span />
+              </div>
             </div>
           </div>
         )}
 
-        {/* Apply AI suggestion button */}
         {hasAiResponse && !isAiTyping && (
-          <div className="flex justify-start animate-fade-in">
-            <div className="ml-8">
-              <button
-                onClick={onApplyAiSuggestion}
-                className="px-4 py-2 bg-camel text-white text-xs font-semibold rounded-xl hover:bg-warm-brown transition-colors shadow-sm"
-              >
-                ✨ Apply AI suggestion
-              </button>
-            </div>
+          <div className="pl-8 animate-fade-in">
+            <button
+              onClick={onApplyAiSuggestion}
+              className="w-full py-2.5 bg-camel text-cream label-micro hover:bg-camel-dark transition-colors"
+              style={{ letterSpacing: '0.15em' }}
+            >
+              Apply Stylist Suggestion
+            </button>
           </div>
         )}
 
@@ -107,15 +110,17 @@ export default function AiStylistChat({ state, onSendMessage, onApplyAiSuggestio
 
       {/* Quick prompts */}
       {aiMessages.length === 0 && (
-        <div className="px-4 pb-2">
-          <div className="flex gap-1.5 flex-wrap">
+        <div className="px-5 pb-3 flex-shrink-0">
+          <p className="label-micro mb-2">Occasions</p>
+          <div className="flex flex-col gap-1.5">
             {QUICK_PROMPTS.map(prompt => (
               <button
                 key={prompt}
                 onClick={() => onSendMessage(prompt)}
-                className="px-3 py-1.5 bg-cream-dark text-espresso text-xs font-medium rounded-full hover:bg-beige transition-colors border border-beige-light"
+                className="text-left px-3 py-2.5 bg-cream-soft border border-sand hover:border-camel hover:bg-beige-light transition-all duration-200 flex justify-between items-center group"
               >
-                {prompt}
+                <span className="font-sans text-espresso" style={{ fontSize: '0.72rem' }}>{prompt}</span>
+                <span className="label-micro text-brown-muted group-hover:text-camel transition-colors">→</span>
               </button>
             ))}
           </div>
@@ -123,21 +128,22 @@ export default function AiStylistChat({ state, onSendMessage, onApplyAiSuggestio
       )}
 
       {/* Input */}
-      <div className="px-4 pb-4 pt-2 border-t border-beige-light">
+      <div className="px-5 pb-5 pt-3 border-t border-sand flex-shrink-0">
         <div className="flex gap-2">
           <input
             type="text"
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}
-            placeholder="Ask your AI stylist..."
-            className="flex-1 bg-off-white border border-beige-light rounded-xl px-3 py-2 text-xs text-espresso placeholder-warm-brown/50 focus:outline-none focus:border-camel transition-colors"
+            placeholder="Ask your AI stylist…"
+            className="flex-1 bg-cream-soft border border-sand px-3 py-2.5 font-sans text-espresso placeholder-brown-muted/50 focus:outline-none focus:border-camel transition-colors"
+            style={{ fontSize: '0.72rem' }}
           />
           <button
             onClick={handleSend}
-            className="px-3 py-2 bg-espresso text-cream rounded-xl hover:bg-warm-brown transition-colors text-sm"
+            className="px-3 bg-espresso text-cream hover:bg-brown-deep transition-colors"
           >
-            →
+            <span style={{ fontSize: '0.8rem' }}>→</span>
           </button>
         </div>
       </div>
