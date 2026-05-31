@@ -80,11 +80,11 @@ export default function VirtualModel({ state, onSaveOutfit, onAddToCart }: Props
       </div>
 
       {/* Model image — the visual centerpiece */}
-      <div className="flex-1 mx-5 my-3 relative overflow-hidden bg-sand">
+      <div className="flex-1 mx-5 my-3 relative overflow-hidden bg-white flex items-center justify-center">
         <img
           src={displayedImage}
           alt="Virtual model preview"
-          className="w-full h-full object-cover object-top transition-opacity duration-500"
+          className="w-full h-full object-contain transition-opacity duration-500"
           style={{ opacity: isImageVisible ? 1 : 0 }}
         />
 
