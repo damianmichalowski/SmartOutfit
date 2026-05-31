@@ -17,7 +17,9 @@
   }
 
   body {
-    @apply bg-cream font-sans text-espresso;
+    background: #F4EFE6;
+    color: #1A0F09;
+    font-family: "DM Sans", system-ui, sans-serif;
     font-feature-settings: "kern" 1, "liga" 1;
   }
 
@@ -40,29 +42,55 @@
 
 @layer components {
   .label-micro {
-    @apply text-xs font-sans font-medium tracking-widest uppercase text-brown-muted;
+    font-family: "DM Sans", system-ui, sans-serif;
     font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8B6651;
   }
 
   .heading-display {
-    @apply font-display font-light text-espresso leading-tight;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 300;
+    color: #1A0F09;
+    line-height: 1.1;
   }
 
   .btn-primary {
-    @apply bg-espresso text-cream font-sans font-medium text-xs tracking-widest uppercase px-8 py-3.5 transition-all duration-300;
+    background: #1A0F09;
+    color: #F4EFE6;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.875rem 2rem;
+    transition: all 300ms;
+    display: inline-block;
   }
 
   .btn-primary:hover {
-    @apply bg-brown-deep;
+    background: #3D2212;
     letter-spacing: 0.22em;
   }
 
   .btn-ghost {
-    @apply border border-espresso text-espresso font-sans font-medium text-xs tracking-widest uppercase px-8 py-3.5 transition-all duration-300;
+    border: 1px solid #1A0F09;
+    color: #1A0F09;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.875rem 2rem;
+    transition: all 300ms;
+    display: inline-block;
   }
 
   .btn-ghost:hover {
-    @apply bg-espresso text-cream;
+    background: #1A0F09;
+    color: #F4EFE6;
   }
 
   .product-card-hover {
