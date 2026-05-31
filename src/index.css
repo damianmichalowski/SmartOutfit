@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cream font-sans text-espresso;
+  }
+}
+
+@layer utilities {
+  .animate-typing {
+    animation: typing 1.2s ease-in-out infinite;
+  }
+
+  @keyframes typing {
+    0%, 60%, 100% { opacity: 1; }
+    30% { opacity: 0.3; }
+  }
+
+  .animate-highlight-pulse {
+    animation: highlightPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes highlightPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(196, 149, 106, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(196, 149, 106, 0); }
+  }
+
+  .animate-cursor {
+    animation: cursorBounce 0.6s ease-in-out;
+  }
+
+  @keyframes cursorBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.4s ease-out;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+}
