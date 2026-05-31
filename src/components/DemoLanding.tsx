@@ -66,9 +66,14 @@ export default function DemoLanding({ onStartDemo, onExploreManually }: Props) {
       {/* Right — editorial image */}
       <div className="w-[46%] flex-shrink-0 relative">
         <img
-          src="/editorial/hero.jpg"
+          src="/editorial/hero.png"
           alt="Fashion editorial"
           className="w-full h-full object-cover"
+          onError={e => {
+            const t = e.currentTarget;
+            if (t.src.endsWith('.png')) t.src = '/editorial/hero.jpg';
+            else if (t.src.endsWith('.jpg')) t.src = '/editorial/hero.jpeg';
+          }}
         />
         {/* Gradient overlay left edge */}
         <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/20 to-transparent pointer-events-none" />

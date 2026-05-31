@@ -19,7 +19,19 @@
       "Bash(curl -sL \"https://images.unsplash.com/photo-1594938298603-c8148c4b9880?w=500&h=600&fit=crop&q=85\" -o products/black-tailored-trousers.jpg)",
       "Bash(curl -sL \"https://images.unsplash.com/photo-1449130851390-10e8cc67ffe4?w=500&h=600&fit=crop&q=85\" -o products/leather-loafers.jpg)",
       "Bash(curl -sL \"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=600&fit=crop&q=85\" -o products/silver-watch.jpg)",
-      "Bash(awk '{print $5, $9}')"
+      "Bash(awk '{print $5, $9}')",
+      "Bash(python3 -c \"import diffusers; print\\('diffusers ok'\\)\")",
+      "Bash(python3 -c \"import torch; print\\('torch:', torch.__version__\\)\")",
+      "Read(//Users/damianmichalowski/.cache/huggingface/**)",
+      "Bash(curl -s \"https://api.replicate.com/v1/models\" -H \"Authorization: Token test\")",
+      "Bash(env)",
+      "Bash(xxd /Users/damianmichalowski/Documents/Projects/SmartOutfit/.env)",
+      "Bash(pip3 install *)",
+      "Bash(mkdir -p /Users/damianmichalowski/Documents/Projects/SmartOutfit/scripts)",
+      "Bash(python3 scripts/generate_models.py)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(list\\(d.keys\\(\\)\\)\\); print\\(list\\(d.get\\('data',['NO DATA']\\)[0].keys\\(\\)\\) if 'data' in d else d.get\\('error',d\\)\\)\")",
+      "Bash(python3 *)"
     ]
   }
 }

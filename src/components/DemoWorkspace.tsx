@@ -14,7 +14,6 @@ interface Props {
   onSaveOutfit: () => void;
   onAddToCart: () => void;
   onCloseCart: () => void;
-  onPauseResume: () => void;
   onNextStep: () => void;
   onPrevStep: () => void;
   onResetDemo: () => void;
@@ -31,7 +30,6 @@ export default function DemoWorkspace({
   onSaveOutfit,
   onAddToCart,
   onCloseCart,
-  onPauseResume,
   onNextStep,
   onPrevStep,
   onResetDemo,
@@ -44,19 +42,8 @@ export default function DemoWorkspace({
       <DemoHeader
         state={state}
         onStartDemo={onStartDemo}
-        onPauseResume={onPauseResume}
         onResetDemo={onResetDemo}
         onOpenCart={() => state.isCartOpen ? onCloseCart() : onAddToCart()}
-      />
-
-      {/* Demo guide — top bar, only when active */}
-      <DemoGuidePanel
-        state={state}
-        onNextStep={onNextStep}
-        onPrevStep={onPrevStep}
-        onPauseResume={onPauseResume}
-        onResetDemo={onResetDemo}
-        onRestartDemo={onRestartDemo}
       />
 
       {/* Main 3-column layout */}
@@ -70,7 +57,7 @@ export default function DemoWorkspace({
           />
         </div>
 
-        {/* Center — virtual model (widest) */}
+        {/* Center — virtual model */}
         <div className="flex-1 min-w-0 bg-cream overflow-hidden flex flex-col">
           <VirtualModel
             state={state}
@@ -88,6 +75,15 @@ export default function DemoWorkspace({
           />
         </div>
       </div>
+
+      {/* Floating demo guide panel — rendered outside columns, fixed to viewport bottom */}
+      <DemoGuidePanel
+        state={state}
+        onNextStep={onNextStep}
+        onPrevStep={onPrevStep}
+        onResetDemo={onResetDemo}
+        onRestartDemo={onRestartDemo}
+      />
 
       <CartDrawer
         items={state.cartItems}
