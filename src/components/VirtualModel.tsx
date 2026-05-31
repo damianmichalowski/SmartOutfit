@@ -18,18 +18,18 @@ function getModelImage(state: AppState): string {
   const hasWatch   = ids.includes('silver-watch');
 
   if (isDemoRunning) {
-    if (currentDemoStep >= 5 || (hasShirt && hasWatch)) return '/models/model-business-complete.jpg';
-    if (currentDemoStep >= 3 || (hasJacket && hasTrousers && hasShoes)) return '/models/model-jacket-trousers-shoes.jpg';
-    if (currentDemoStep >= 2 || (hasJacket && hasTrousers)) return '/models/model-jacket-trousers.jpg';
-    if (currentDemoStep >= 1 || hasJacket) return '/models/model-jacket.jpg';
+    if (currentDemoStep >= 5 || (hasShirt && hasWatch)) return '/models/model-business-complete.png';
+    if (currentDemoStep >= 3 || (hasJacket && hasTrousers && hasShoes)) return '/models/model-jacket-trousers-shoes.png';
+    if (currentDemoStep >= 2 || (hasJacket && hasTrousers)) return '/models/model-jacket-trousers.png';
+    if (currentDemoStep >= 1 || hasJacket) return '/models/model-jacket.png';
   } else {
-    if (hasShirt && hasWatch) return '/models/model-business-complete.jpg';
-    if (hasJacket && hasTrousers && hasShoes) return '/models/model-jacket-trousers-shoes.jpg';
-    if (hasJacket && hasTrousers) return '/models/model-jacket-trousers.jpg';
-    if (hasJacket) return '/models/model-jacket.jpg';
+    if (hasShirt && hasWatch) return '/models/model-business-complete.png';
+    if (hasJacket && hasTrousers && hasShoes) return '/models/model-jacket-trousers-shoes.png';
+    if (hasJacket && hasTrousers) return '/models/model-jacket-trousers.png';
+    if (hasJacket) return '/models/model-jacket.png';
   }
 
-  return '/models/model-base.jpg';
+  return '/models/model-base.png';
 }
 
 export default function VirtualModel({ state, onSaveOutfit, onAddToCart }: Props) {
@@ -80,7 +80,8 @@ export default function VirtualModel({ state, onSaveOutfit, onAddToCart }: Props
       </div>
 
       {/* Model image — the visual centerpiece */}
-      <div className="flex-1 mx-5 my-3 relative overflow-hidden bg-white flex items-center justify-center">
+      <div className="flex-1 mx-5 my-3 relative overflow-hidden flex items-center justify-center"
+           style={{ background: 'linear-gradient(180deg, #F8F4EE 0%, #EDE5D5 100%)' }}>
         <img
           src={displayedImage}
           alt="Virtual model preview"
@@ -105,15 +106,6 @@ export default function VirtualModel({ state, onSaveOutfit, onAddToCart }: Props
           </div>
         )}
 
-        {/* No outfit state */}
-        {!hasOutfit && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="text-center px-8">
-              <p className="label-micro mb-2">Wardrobe empty</p>
-              <p className="font-display text-base font-light text-brown-muted">Select items to build your look</p>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Outfit summary & CTA */}
